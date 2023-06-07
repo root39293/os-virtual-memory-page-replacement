@@ -1,183 +1,201 @@
+import pandas as pd
 import matplotlib.pyplot as plt
 from collections import Counter
 
-def get_input():
+def getInput():
+    referenceString = list(input("참조열 입력(EX. ABADCBBDACADDABC) : "))
+    maxFrameSize = input("1부터 X까지의 프레임 사이즈 : ")
+
+    return referenceString, maxFrameSize
 
 
-    algorithm = input("알고리즘 선택 (FIFO, LRU, LFU, MFU) : ")
-    reference_string = list(input("참조열입력(EX. ABCDABACDC) : "))
-    frame_size = int(input("프레임 사이즈 : "))
-
-    return algorithm, reference_string, frame_size
-
-def fifo(reference_string, frame_size):
-
+def fifo(referenceString, frameSize):
     frame = []
-    page_faults = 0
-    page_hits = 0
-    frame_status = []
+    pageFaults = 0
+    pageHits = 0
 
-    for page in reference_string:
-        if len(frame) < frame_size:
-            if page not in frame:
+    for page in referenceString:
+        if page not in frame:
+            if len(frame) < frameSize:
                 frame.append(page)
-                page_faults += 1
             else:
-                page_hits += 1
-        else:
-            if page not in frame:
                 frame.pop(0)
                 frame.append(page)
-                page_faults += 1
-            else:
-                page_hits += 1
-
-        frame_status.append(list(frame))
-
-    page_fault_rate = page_faults / len(reference_string)
-
-    return {'page_faults': page_faults, 'page_hits': page_hits, 'page_fault_rate': page_fault_rate, 'frame_status': frame_status}
-
-def lru(reference_string, frame_size):
-
-    frame = []
-    recent_use = {}
-    page_faults = 0
-    page_hits = 0
-    frame_status = []
-
-    for i, page in enumerate(reference_string):
-        if page not in frame:
-            if len(frame) < frame_size:
-                frame.append(page)
-            else:
-                least_recently_used = min(recent_use, key=recent_use.get)
-                frame.remove(least_recently_used)
-                del recent_use[least_recently_used]
-
-                frame.append(page)
-            page_faults += 1
+            pageFaults += 1
         else:
-            page_hits += 1
-        recent_use[page] = i
+            pageHits += 1
 
-        frame_status.append(list(frame))
+    pageFaultRate = pageFaults / len(referenceString)
 
-    page_fault_rate = page_faults / len(reference_string)
+    return pageFaultRate, pageHits, pageFaults
 
-    return {'page_faults': page_faults, 'page_hits': page_hits, 'page_fault_rate': page_fault_rate, 'frame_status': frame_status}
 
-def lfu(reference_string, frame_size):
 
+
+def lru(referenceString, frameSize):
     frame = []
-    page_frequency = Counter()
-    page_faults = 0
-    page_hits = 0
-    frame_status = []
+    recentUse = {}
+    pageFaults = 0
+    pageHits = 0
 
-    for page in reference_string:
-        page_frequency[page] += 1
+    for i, page in enumerate(referenceString):
         if page not in frame:
-            if len(frame) < frame_size:
+            if len(frame) < frameSize:
                 frame.append(page)
             else:
-                least_frequently_used = min(frame, key=page_frequency.get)
-                frame.remove(least_frequently_used)
-                
+                leastRecentlyUsed = min(recentUse, key=recentUse.get)
+                frame.remove(leastRecentlyUsed)
+                del recentUse[leastRecentlyUsed]
                 frame.append(page)
-            page_faults += 1
+            pageFaults += 1
         else:
-            page_hits += 1
+            pageHits += 1
 
-        frame_status.append(list(frame))
+        recentUse[page] = i
 
-    page_fault_rate = page_faults / len(reference_string)
+    pageFaultRate = pageFaults / len(referenceString)
 
-    return {'page_faults': page_faults, 'page_hits': page_hits, 'page_fault_rate': page_fault_rate, 'frame_status': frame_status}
+    return pageFaultRate, pageHits, pageFaults
 
-def mfu(reference_string, frame_size):
+
+def lfu(referenceString, frameSize):
     frame = []
-    page_frequency = Counter()
-    page_faults = 0
-    page_hits = 0
-    frame_status = []
+    pageFrequency = Counter()
+    pageFaults = 0
+    pageHits = 0
 
-    for page in reference_string:
-        page_frequency[page] += 1
+    for page in referenceString:
+        pageFrequency[page] += 1
         if page not in frame:
-            if len(frame) < frame_size:
+            if len(frame) < frameSize:
                 frame.append(page)
             else:
-                most_frequently_used = max(frame, key=page_frequency.get)
-                frame.remove(most_frequently_used)
-                
+                leastFrequentlyUsed = min(frame, key=pageFrequency.get)
+                frame.remove(leastFrequentlyUsed)
+
                 frame.append(page)
-            page_faults += 1
+            pageFaults += 1
         else:
-            page_hits += 1
+            pageHits += 1
 
-        frame_status.append(list(frame))
+    pageFaultRate = pageFaults / len(referenceString)
 
-    page_fault_rate = page_faults / len(reference_string)
+    return pageFaultRate, pageHits, pageFaults
 
-    return {'page_faults': page_faults, 'page_hits': page_hits, 'page_fault_rate': page_fault_rate, 'frame_status': frame_status}
 
-def page_replacement(algorithm, reference_string, frame_size):
 
+def mfu(referenceString, frameSize):
+    frame = []
+    pageFrequency = Counter()
+    pageFaults = 0
+    pageHits = 0
+
+    for page in referenceString:
+        pageFrequency[page] += 1
+        if page not in frame:
+            if len(frame) < frameSize:
+                frame.append(page)
+            else:
+                mostFrequentlyUsed = max(frame, key=pageFrequency.get)
+                frame.remove(mostFrequentlyUsed)
+
+                frame.append(page)
+            pageFaults += 1
+        else:
+            pageHits += 1
+
+    pageFaultRate = pageFaults / len(referenceString)
+
+    return pageFaultRate, pageHits, pageFaults
+
+
+
+def pageReplacement(algorithm, referenceString, frameSize):
     if algorithm == 'FIFO':
-        return fifo(reference_string, frame_size)
+        return fifo(referenceString, frameSize)
     elif algorithm == 'LRU':
-        return lru(reference_string, frame_size)
+        return lru(referenceString, frameSize)
     elif algorithm == 'LFU':
-        return lfu(reference_string, frame_size)
+        return lfu(referenceString, frameSize)
     elif algorithm == 'MFU':
-        return mfu(reference_string, frame_size)
+        return mfu(referenceString, frameSize)
     else:
-        print("wrong input")
+        print("잘못된 입력입니다.")
         return None
 
 
-def analyze_result(result, reference_string):
-    page_faults = result['page_faults']
-    page_hits = result['page_hits']
-    page_fault_rate = result['page_fault_rate']
-
-    print("Page Faults: ", page_faults)
-    print("Page Hits: ", page_hits)
-    print("Page Fault Rate: ", page_fault_rate)
-
-    frame_status = result['frame_status']
-
-    print("Reference String: ", reference_string)
-
-    for i, frames in enumerate(frame_status):
-        print(reference_string[i].center(5), "|", " ".join(frames))
-
-
-def output_result(result, reference_string):
-
-    analyze_result(result, reference_string)
-    draw_graph(result)
-
-
-def draw_graph(result):
-
-    page_faults = result['page_faults']
-    page_hits = result['page_hits']
-    
-    labels = ['Page Faults', 'Page Hits']
-    values = [page_faults, page_hits]
-
-    plt.bar(labels, values)
-    plt.title("Page Replacement Result")
-    plt.show()
 
 
 def main():
-    algorithm, reference_string, frame_size = get_input()
-    result = page_replacement(algorithm, reference_string, frame_size)
-    if result is not None:
-        output_result(result, reference_string)
+    referenceString, maxFrameSize = getInput()
+
+    algorithms = ['FIFO', 'LRU', 'LFU', 'MFU']
+    frameSizes = list(range(1, int(maxFrameSize) + 1))
+    results = {}
+
+    for algorithm in algorithms:
+        pageFaultRates = []
+        pageHitsList = []
+        pageFaultsList = []
+
+        for frameSize in frameSizes:
+            pageFaultRate, pageHits, pageFaults = pageReplacement(algorithm, referenceString, frameSize)
+
+            if pageFaultRate is not None:
+                pageFaultRates.append(pageFaultRate)
+                pageHitsList.append(pageHits)
+                pageFaultsList.append(pageFaults)
+
+        results[algorithm] = {'pageFaultRates': pageFaultRates, 'pageHits': pageHitsList, 'pageFaults': pageFaultsList}
+
+    for algorithm in algorithms:
+        print(f"Algorithm: {algorithm}")
+        print()
+
+        for i, frameSize in enumerate(frameSizes):
+            print(f"Frame Size: {frameSize}")
+            print(f"Page Fault Rate: {results[algorithm]['pageFaultRates'][i]}")
+            print(f"Page Hits: {results[algorithm]['pageHits'][i]}")
+            print(f"Page Faults: {results[algorithm]['pageFaults'][i]}")
+            print()
+
+    for algorithm in algorithms:
+        plt.plot(frameSizes, results[algorithm]['pageFaultRates'], label=algorithm)
+
+    plt.title('Page Fault Rates by Frame Size')
+    plt.xlabel('Frame Size')
+    plt.ylabel('Page Fault Rate')
+    plt.legend()
+    plt.xticks(range(1, max(frameSizes) + 1))
+    plt.yticks([i/10 for i in range(11)])  
+    plt.ylim([0, 1.1]) 
+    plt.savefig('page_fault_rates.png')
+
+
+    plt.clf()  # Clear the figure for the next plot
+
+    for algorithm in algorithms:
+        plt.plot(frameSizes, results[algorithm]['pageHits'], label=algorithm)
+
+    plt.title('Page Hits by Frame Size')
+    plt.xlabel('Frame Size')
+    plt.ylabel('Page Hits')
+    plt.legend()
+    plt.xticks(range(1, max(frameSizes) + 1))
+    plt.savefig('page_hits.png')
+
+
+    plt.clf()  # Clear the figure for the next plot
+
+    for algorithm in algorithms:
+        plt.plot(frameSizes, results[algorithm]['pageFaults'], label=algorithm)
+
+    plt.title('Page Faults by Frame Size')
+    plt.xlabel('Frame Size')
+    plt.ylabel('Page Faults')
+    plt.legend()
+    plt.xticks(range(1, max(frameSizes) + 1))
+    plt.savefig('page_faults.png')
 
 
 if __name__ == "__main__":

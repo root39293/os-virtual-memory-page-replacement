@@ -4,8 +4,8 @@ from collections import Counter
 def get_input():
 
 
-    algorithm = input("페이지 교체 알고리즘 (FIFO, LRU, LFU, MFU) : ")
-    reference_string = list(input("참조열 : "))
+    algorithm = input("알고리즘 선택 (FIFO, LRU, LFU, MFU) : ")
+    reference_string = list(input("참조열입력(EX. ABCDABACDC) : "))
     frame_size = int(input("프레임 사이즈 : "))
 
     return algorithm, reference_string, frame_size

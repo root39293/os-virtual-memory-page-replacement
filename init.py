@@ -1,4 +1,4 @@
-import pandas as pd
+
 import matplotlib.pyplot as plt
 from collections import Counter
 
@@ -157,7 +157,7 @@ def main():
             print(f"Page Fault Rate: {results[algorithm]['pageFaultRates'][i]}")
             print(f"Page Hits: {results[algorithm]['pageHits'][i]}")
             print(f"Page Faults: {results[algorithm]['pageFaults'][i]}")
-            print()
+            print(" = = = = = = = = = =")
 
     for algorithm in algorithms:
         plt.plot(frameSizes, results[algorithm]['pageFaultRates'], label=algorithm)
@@ -172,7 +172,7 @@ def main():
     plt.savefig('page_fault_rates.png')
 
 
-    plt.clf()  # Clear the figure for the next plot
+    plt.clf() 
 
     for algorithm in algorithms:
         plt.plot(frameSizes, results[algorithm]['pageHits'], label=algorithm)
@@ -185,7 +185,7 @@ def main():
     plt.savefig('page_hits.png')
 
 
-    plt.clf()  # Clear the figure for the next plot
+    plt.clf() 
 
     for algorithm in algorithms:
         plt.plot(frameSizes, results[algorithm]['pageFaults'], label=algorithm)

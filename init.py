@@ -170,7 +170,7 @@ def main():
     plt.yticks([i/10 for i in range(11)])  
     plt.ylim([0, 1.1]) 
     plt.savefig('page_fault_rates.png')
-
+    plt.show()
 
     plt.clf() 
 

@@ -1,2 +1,5 @@
 .vscode
 /myenv
+/build
+/dist
+*.spec

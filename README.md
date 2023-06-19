@@ -28,7 +28,9 @@ This is a Python program that implements various page replacement algorithms inc
 - LFU: Least Frequently Used
 - MFU: Most Frequently Used
 
-## Example
+## Screenshot
+
+
 
 
 
